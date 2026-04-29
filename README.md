@@ -19,8 +19,8 @@ SL is a compiled, statically-typed language with automatic reference counting, g
 **Requirements:** Python 3.10+, gcc, pip
 
 ```bash
-git clone https://github.com/your-org/sl-lang
-cd sl-lang
+git clone https://github.com/robruon/sl
+cd sl
 
 chmod +x install.sh
 ./install.sh
@@ -35,11 +35,11 @@ sl example.sl --run
 
 ### VS Code Extension
 
-Install `sl-language-0.2.0.vsix` for syntax highlighting, snippets, and autocomplete:
+Download the latest `sl-language-*.vsix` from the [Releases page](https://github.com/robruon/sl/releases) for syntax highlighting, snippets, and autocomplete:
 
 1. Open VS Code
 2. Extensions panel → `...` → *Install from VSIX*
-3. Select `sl-language-0.2.0.vsix`
+3. Select `sl-language-*.vsix`
 
 ---
 
