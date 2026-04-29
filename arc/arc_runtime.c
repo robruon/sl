@@ -945,7 +945,7 @@ void* lang_read_file(void *path) {
     rewind(f);
     void *out = lang_alloc(40 + size + 1, &lang_str_vtable);
     *_str_len_ptr(out) = size;
-    (void)fread(_str_data_ptr(out), 1, size, f);
+    size_t _nr = fread(_str_data_ptr(out), 1, size, f); (void)_nr;
     _str_data_ptr(out)[size] = '\0';
     fclose(f);
     return out;

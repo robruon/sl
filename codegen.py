@@ -2684,7 +2684,7 @@ def _cmd_uninstall(args):
     print(f"Uninstalled '{pkg}'.")
 
 
-REGISTRY_URL = 'https://raw.githubusercontent.com/sl-lang/registry/main/packages.json'
+REGISTRY_URL = 'https://raw.githubusercontent.com/robruon/sl-registry/main/packages.json'
 
 def _cmd_search(args):
     """sl search [query]  — search the package registry."""

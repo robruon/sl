@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: 1
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -28,21 +31,10 @@ jobs:
         working-directory: arc
 
       - name: Run example.sl
-        run: |
-          export PYTHONDONTWRITEBYTECODE=1
-          python codegen.py example.sl --run
+        run: python codegen.py example.sl --run
 
       - name: Run advanced.sl
-        run: |
-          export PYTHONDONTWRITEBYTECODE=1
-          python codegen.py advanced.sl --run
+        run: python codegen.py advanced.sl --run
 
       - name: Run modules.sl
-        run: |
-          export PYTHONDONTWRITEBYTECODE=1
-          python codegen.py modules.sl --run
-
-      - name: Run ARC tests
-        run: make
-        working-directory: arc
-        continue-on-error: true  # tests use sanitizers not available everywhere
+        run: python codegen.py modules.sl --run
