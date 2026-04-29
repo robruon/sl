@@ -1,0 +1,50 @@
+{
+  "name": "sl-language",
+  "displayName": "SL Language",
+  "description": "Syntax highlighting, autocomplete, and snippets for the SL programming language",
+  "version": "0.4.0",
+  "publisher": "sl-lang",
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Programming Languages"],
+  "icon": "icon.png",
+  "repository": { "type": "git", "url": "" },
+  "activationEvents": ["onLanguage:sl"],
+  "main": "./client.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "sl",
+        "aliases": ["SL", "sl"],
+        "extensions": [".sl"],
+        "configuration": "./language-configuration.json",
+        "icon": { "light": "./icon.png", "dark": "./icon.png" }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sl",
+        "scopeName": "source.sl",
+        "path": "./syntaxes/sl.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "sl",
+        "path": "./snippets/sl.json"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "sl-icons",
+        "label": "SL Icons",
+        "path": "./fileicons/sl-icon-theme.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11"
+  },
+  "license": "MIT"
+}

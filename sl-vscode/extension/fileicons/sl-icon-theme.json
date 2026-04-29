@@ -1,0 +1,21 @@
+{
+  "iconDefinitions": {
+    "_sl_module": {
+      "iconPath": "./icons/sl-module.svg"
+    },
+    "_sl_file": {
+      "iconPath": "../icon.png"
+    }
+  },
+  "fileExtensions": {
+    "sl": "_sl_file"
+  },
+  "folderNames": {},
+  "fileNames": {
+    "math.sl":    "_sl_module",
+    "strings.sl": "_sl_module",
+    "arrays.sl":  "_sl_module",
+    "io.sl":      "_sl_module",
+    "convert.sl": "_sl_module"
+  }
+}

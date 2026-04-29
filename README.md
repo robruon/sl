@@ -35,11 +35,11 @@ sl example.sl --run
 
 ### VS Code Extension
 
-Download the latest `sl-language-*.vsix` from the [Releases page](https://github.com/robruon/sl/releases) for syntax highlighting, snippets, and autocomplete:
+Install `sl-language-0.2.0.vsix` for syntax highlighting, snippets, and autocomplete:
 
 1. Open VS Code
 2. Extensions panel → `...` → *Install from VSIX*
-3. Select `sl-language-*.vsix`
+3. Select `sl-language-0.2.0.vsix`
 
 ---
 
@@ -158,6 +158,37 @@ i :< 0
 v :< Vec2:3,4
 print:v::length_sq          # 25
 v::scale:2
+```
+
+#### Constructor hook — `:init:@`
+
+Define `:init:@[void]` to run post-allocation logic before the object is
+returned to the caller. Fields are already set when it runs, so you can
+validate, clamp, or fill defaults:
+
+```
+.Config:host_str,port_int
+    :init:@[void]
+        ? @:port == 0
+            @:port @:< + 8080   # default port
+
+    :url:@[str]
+        -> fmt:"{}:{}",@:host,@:port
+
+c :< Config:"localhost",0
+print:c::url                    # localhost:8080
+```
+
+`:init` only takes `@` (self) — all data comes through the named fields.
+For construction that needs extra logic beyond field defaults, use a factory
+function instead:
+
+```
+:make_config:host_str,port_int,use_ssl_int[obj]
+    p :< port
+    ? use_ssl
+        p @:< + 443
+    -> Config:host,p
 ```
 
 ### Generators
@@ -389,31 +420,31 @@ reference cycles.
 
 ```
 sl-lang/
-├── codegen.py              compiler + JIT runner
-├── lexer.py                tokeniser
-├── parser.py               Pratt parser → AST
-├── install.sh              setup script (creates .venv, builds libarc.so, installs sl command)
-├── README.md               this file
-├── example.sl              introductory tour (functions, loops, generators, strings, arrays)
-├── advanced.sl             classes, methods, namespaces, inline functions
-├── modules.sl              full module system (imports, ~[ns], ~C FFI, stdlib usage)
-├── arc/
-│   ├── arc_runtime.c       ARC runtime: ref-counting, strings, arrays, generators, stdlib C layer
-│   ├── arc_runtime.h       public C API
-│   └── Makefile            build targets:
-│                             make shared   → libarc.so  (used by compiler JIT)
-│                             make          → debug build + tests (address sanitizer)
-│                             make release  → optimised build
-│                             make tsan     → thread sanitizer build
-│                             make clean    → remove all build artefacts
-├── stdlib/
-│   ├── math.sl             ~[math]     abs, min, max, sqrt, sin, cos, pow, pi, ...
-│   ├── strings.sl          ~[strings]  trim, to_upper, contains, replace, pad_left, ...
-│   ├── arrays.sl           ~[arrays]   sort, reverse, sum, min, max, fill, range, ...
-│   ├── convert.sl          ~[convert]  int_to_str, str_to_int, float_to_str, ...
-│   └── io.sl               ~[io]       read_line, read_file, write_file, file_exists, ...
-├── .venv/                  Python virtual environment (created by install.sh, not committed)
-└── sl-language-0.3.0.vsix  VS Code extension (syntax highlighting + autocomplete)
+  codegen.py              compiler + JIT runner
+  lexer.py                tokeniser
+  parser.py               Pratt parser → AST
+  install.sh              setup script (creates .venv, builds libarc.so, installs sl command)
+  README.md               this file
+  example.sl              introductory tour (functions, loops, generators, strings, arrays)
+  advanced.sl             classes, methods, namespaces, inline functions
+  modules.sl              full module system (imports, ~[ns], ~C FFI, stdlib usage)
+  arc/
+    arc_runtime.c         ARC runtime: ref-counting, strings, arrays, generators, stdlib C layer
+    arc_runtime.h         public C API
+    Makefile              build targets:
+                            make shared   → libarc.so  (used by compiler JIT)
+                            make          → debug build + tests (address sanitizer)
+                            make release  → optimised build
+                            make tsan     → thread sanitizer build
+                            make clean    → remove all build artefacts
+  stdlib/
+    math.sl               ~[math]     abs, min, max, sqrt, sin, cos, pow, pi, ...
+    strings.sl            ~[strings]  trim, to_upper, contains, replace, pad_left, ...
+    arrays.sl             ~[arrays]   sort, reverse, sum, min, max, fill, range, ...
+    convert.sl            ~[convert]  int_to_str, str_to_int, float_to_str, ...
+    io.sl                 ~[io]       read_line, read_file, write_file, file_exists, ...
+  .venv/                  Python virtual environment (created by install.sh, not committed)
+  sl-language-0.3.0.vsix  VS Code extension (syntax highlighting + autocomplete)
 ```
 
 ### Import resolution order

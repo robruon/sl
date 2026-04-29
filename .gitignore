@@ -14,7 +14,6 @@ arc/arc_test.c
 # VS Code extension build
 sl-vscode/node_modules/
 sl-vscode/*.vsix
-*.vsix
 
 # Installed packages
 ~/.sl/

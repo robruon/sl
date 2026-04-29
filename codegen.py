@@ -472,7 +472,8 @@ class Codegen(NodeVisitor):
 
         # ── 2. Collect method signatures ─────────────────────────────
         method_defs = [s for s in node.body.stmts if isinstance(s, FnDef)]
-        n_methods   = len(method_defs)
+        # :init is excluded from vtable — it's a constructor hook, not user-callable
+        n_methods   = sum(1 for m in method_defs if m.name != 'init')
 
         # vtable: [i32 type_id, i32 method_count, i8* dtor, i8* visitor, i8*× n_methods]
         vtable_ty = ir.LiteralStructType([i32, i32] + [i8p] * (2 + n_methods))
@@ -519,14 +520,20 @@ class Codegen(NodeVisitor):
         ci.constructor.linkage = 'external'
 
         # ── 5. Forward-declare methods ───────────────────────────────
-        for slot_idx, mdef in enumerate(method_defs):
+        # :init:@ is a special post-allocation hook — declared and emitted
+        # like a normal method but excluded from the vtable slot list so it
+        # isn't exposed as a user-callable dispatch target.
+        slot_idx = 0
+        for mdef in method_defs:
             fn_name, fn_ty = self._method_signature(ci, mdef)
             mfn = ir.Function(self.module, fn_ty, name=fn_name)
             mfn.linkage = 'external'
-            ci.method_names.append(mdef.name)
-            ci.method_slot[mdef.name] = slot_idx
             ci.method_fnty[mdef.name] = fn_ty
             ci.method_fn[mdef.name]   = mfn
+            if mdef.name != 'init':   # exclude :init from vtable
+                ci.method_names.append(mdef.name)
+                ci.method_slot[mdef.name] = slot_idx
+                slot_idx += 1
 
         # ── 6. Emit vtable constant ──────────────────────────────────
         def _as_i8p(fn): return ir.Constant.bitcast(fn, i8p)
@@ -557,7 +564,9 @@ class Codegen(NodeVisitor):
     def _method_signature(self, ci: ClassInfo,
                           mdef: FnDef) -> tuple[str, ir.FunctionType]:
         """Return (llvm_fn_name, FunctionType) for a method."""
-        fn_name = f'{ci.name}_{mdef.name}'
+        # :init maps to ClassName__init__ to avoid clash with ClassName_init (the constructor)
+        mname = '__init__' if mdef.name == 'init' else mdef.name
+        fn_name = f'{ci.name}_{mname}'
 
         param_tys: list[ir.Type] = []
         # Receiver
@@ -680,6 +689,17 @@ class Codegen(NodeVisitor):
                 cond = bld.icmp_unsigned('!=', llvm_arg, NULL)
                 with bld.if_then(cond):
                     bld.call(self._fn_retain, [llvm_arg])
+
+        # ── Call :init:@ if defined ───────────────────────────────────
+        # If the class defines an  :init:@[void]  method, call it now
+        # so the object can run post-allocation logic (defaults, validation,
+        # derived fields) before the caller receives it.
+        if 'init' in ci.method_fn:
+            init_fn = ci.method_fn['init']
+            # init must be void and take only self (i8*)
+            if (isinstance(init_fn.type.pointee.return_type, ir.VoidType)
+                    and len(init_fn.type.pointee.args) == 1):
+                bld.call(init_fn, [raw])
 
         bld.ret(raw)
 

@@ -1,0 +1,159 @@
+{
+  "New SL File": {
+    "prefix": "slfile",
+    "body": [
+      ":main[int]",
+      "    $0",
+      "    -> 0"
+    ],
+    "description": "Basic SL program entry point"
+  },
+
+  "New Module": {
+    "prefix": "newmod",
+    "body": [
+      "# ${1:module_name}.sl",
+      "",
+      "~[${1:module_name}]",
+      "",
+      "    :${2:function}:${3:param}_${4:int}[${5:int}]",
+      "        $0"
+    ],
+    "description": "New namespace module file"
+  },
+
+  "New Package": {
+    "prefix": "newpkg",
+    "body": [
+      "# ${1:package_name}.sl  —  ${2:description}",
+      "# ~> ${1:package_name}",
+      "",
+      "~[${1:package_name}]",
+      "",
+      "    # ── C bindings ──────────────────────────────────────────",
+      "    ~C :${3:c_function}:${4:param}_${5:int}[${6:int}]",
+      "",
+      "    # ── Public API ──────────────────────────────────────────",
+      "    :${3:c_function}:${4:param}_${5:int}[${6:int}] -> ${3:c_function}:${4:param}",
+      "$0"
+    ],
+    "description": "New bundleable package with C FFI bindings"
+  },
+
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      ":${1:name}:${2:param}_${3:int}[${4:int}]",
+      "    $0",
+      "    -> ${5:0}"
+    ],
+    "description": "Define a function"
+  },
+
+  "Void Function": {
+    "prefix": "fnv",
+    "body": [
+      ":${1:name}:${2:param}_${3:int}",
+      "    $0"
+    ],
+    "description": "Define a void function"
+  },
+
+  "Generator": {
+    "prefix": "gen",
+    "body": [
+      "|:${1:name}:${2:param}_${3:int}[|${4:int}]",
+      "    ${5:i} :< 0",
+      "    !! ${5:i} < ${2:param}",
+      "        ->| ${5:i}",
+      "        ${5:i} @:< + 1"
+    ],
+    "description": "Define a generator"
+  },
+
+  "While Loop": {
+    "prefix": "while",
+    "body": [
+      "!! ${1:condition}",
+      "    $0"
+    ],
+    "description": "While loop"
+  },
+
+  "If": {
+    "prefix": "if",
+    "body": [
+      "? ${1:condition}",
+      "    $0"
+    ],
+    "description": "If statement"
+  },
+
+  "If / Else": {
+    "prefix": "ife",
+    "body": [
+      "? ${1:condition}",
+      "    $2",
+      "--",
+      "    $0"
+    ],
+    "description": "If / else statement"
+  },
+
+  "If / Else-if / Else": {
+    "prefix": "ifeif",
+    "body": [
+      "? ${1:condition}",
+      "    $2",
+      "?? ${3:condition}",
+      "    $4",
+      "--",
+      "    $0"
+    ],
+    "description": "If / else-if / else statement"
+  },
+
+  "Variable": {
+    "prefix": "var",
+    "body": [
+      "${1:name} :< ${0:value}"
+    ],
+    "description": "Declare a variable"
+  },
+
+  "Print": {
+    "prefix": "print",
+    "body": [
+      "print:${1:value}"
+    ],
+    "description": "Print a value"
+  },
+
+  "Print Format": {
+    "prefix": "printf",
+    "body": [
+      "print:\"${1:message {}}\"${2:, value}"
+    ],
+    "description": "Print with format string"
+  },
+
+  "Format String": {
+    "prefix": "fmt",
+    "body": [
+      "${1:s} :< fmt:\"${2:message {}}\"${3:, value}"
+    ],
+    "description": "Format a string into a variable"
+  },
+
+  "Return": {
+    "prefix": "ret",
+    "body": "-> ${0:value}",
+    "description": "Return statement"
+  },
+
+  "Yield": {
+    "prefix": "yield",
+    "body": "->| ${0:value}",
+    "description": "Yield from generator"
+  }
+}

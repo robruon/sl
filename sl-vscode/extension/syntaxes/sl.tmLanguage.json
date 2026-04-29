@@ -1,0 +1,277 @@
+{
+  "name": "SL",
+  "scopeName": "source.sl",
+  "fileTypes": ["sl"],
+  "patterns": [
+    { "include": "#block-comment" },
+    { "include": "#line-comment" },
+    { "include": "#import" },
+    { "include": "#namespace" },
+    { "include": "#ffi" },
+    { "include": "#generator-def" },
+    { "include": "#class-def" },
+    { "include": "#method-def" },
+    { "include": "#function-def" },
+    { "include": "#return" },
+    { "include": "#yield" },
+    { "include": "#send-gen" },
+    { "include": "#control-flow" },
+    { "include": "#aug-assignment" },
+    { "include": "#assignment" },
+    { "include": "#self-field" },
+    { "include": "#method-call" },
+    { "include": "#ns-call" },
+    { "include": "#builtins" },
+    { "include": "#string-interpolated" },
+    { "include": "#string" },
+    { "include": "#number" },
+    { "include": "#operators" },
+    { "include": "#type-annotation" },
+    { "include": "#constants" }
+  ],
+  "repository": {
+
+    "block-comment": {
+      "name": "comment.block.sl",
+      "begin": "#\\|",
+      "end": "\\|#",
+      "beginCaptures": { "0": { "name": "punctuation.definition.comment.begin.sl" } },
+      "endCaptures":   { "0": { "name": "punctuation.definition.comment.end.sl" } }
+    },
+
+    "line-comment": {
+      "name": "comment.line.number-sign.sl",
+      "match": "#.*$"
+    },
+
+    "import": {
+      "comment": "~> module  or  ~> module:name,name",
+      "match": "(~>)\\s+([a-zA-Z_][a-zA-Z0-9_.-]*)((?::[a-zA-Z_][a-zA-Z0-9_,]*)*)?",
+      "captures": {
+        "1": { "name": "keyword.control.import.sl" },
+        "2": { "name": "entity.name.namespace.sl" },
+        "3": { "name": "variable.other.sl" }
+      }
+    },
+
+    "namespace": {
+      "comment": "~[name]",
+      "match": "(~\\[)([a-zA-Z_][a-zA-Z0-9_]*)(\\])",
+      "captures": {
+        "1": { "name": "keyword.control.namespace.sl" },
+        "2": { "name": "entity.name.namespace.sl" },
+        "3": { "name": "keyword.control.namespace.sl" }
+      }
+    },
+
+    "ffi": {
+      "comment": "~C :c_function:params[ret]",
+      "match": "(~C)\\s+(:)([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.other.ffi.sl" },
+        "2": { "name": "punctuation.definition.ffi.sl" },
+        "3": { "name": "entity.name.function.ffi.sl" }
+      }
+    },
+
+    "generator-def": {
+      "comment": "|:name:params[|return_type]",
+      "match": "^(\\|)(:)([a-zA-Z_][a-zA-Z0-9_]*)((?::[a-zA-Z_][a-zA-Z0-9_]*)*)(\\[)(\\|)([a-zA-Z_][a-zA-Z0-9_]*)(\\])",
+      "captures": {
+        "1": { "name": "keyword.other.generator.sl" },
+        "2": { "name": "punctuation.definition.function.sl" },
+        "3": { "name": "entity.name.function.sl" },
+        "4": { "name": "variable.parameter.sl" },
+        "5": { "name": "punctuation.definition.return-type.sl" },
+        "6": { "name": "keyword.other.generator.sl" },
+        "7": { "name": "storage.type.sl" },
+        "8": { "name": "punctuation.definition.return-type.sl" }
+      }
+    },
+
+    "class-def": {
+      "comment": ".ClassName:field_type,...",
+      "match": "^(\\.)(([A-Z][a-zA-Z0-9_]*))((?::[a-zA-Z_][a-zA-Z0-9_]*)*)?",
+      "captures": {
+        "1": { "name": "keyword.other.class.sl" },
+        "2": { "name": "entity.name.class.sl" },
+        "4": { "name": "variable.parameter.sl" }
+      }
+    },
+
+    "method-def": {
+      "comment": ":method_name:@,params[ret]  inside a class body",
+      "match": "^\\s+(:)([a-zA-Z_][a-zA-Z0-9_]*)((?::[@a-zA-Z_][a-zA-Z0-9_,.]*)*)(?:(\\[)([^\\]]*)(\\]))?",
+      "captures": {
+        "1": { "name": "punctuation.definition.method.sl" },
+        "2": { "name": "entity.name.function.method.sl" },
+        "3": { "name": "variable.parameter.sl" },
+        "4": { "name": "punctuation.definition.return-type.sl" },
+        "5": { "name": "storage.type.sl" },
+        "6": { "name": "punctuation.definition.return-type.sl" }
+      }
+    },
+
+    "function-def": {
+      "comment": ":name:params[return_type]",
+      "match": "^(:)([a-zA-Z_][a-zA-Z0-9_]*)((?::[a-zA-Z_][a-zA-Z0-9_]*)*)(?:(\\[)([^\\]]*)(\\]))?",
+      "captures": {
+        "1": { "name": "punctuation.definition.function.sl" },
+        "2": { "name": "entity.name.function.sl" },
+        "3": { "name": "variable.parameter.sl" },
+        "4": { "name": "punctuation.definition.return-type.sl" },
+        "5": { "name": "storage.type.sl" },
+        "6": { "name": "punctuation.definition.return-type.sl" }
+      }
+    },
+
+    "return": {
+      "match": "(->)(?!\\|)",
+      "captures": { "1": { "name": "keyword.control.return.sl" } }
+    },
+
+    "yield": {
+      "match": "(->\\|)",
+      "captures": { "1": { "name": "keyword.control.yield.sl" } }
+    },
+
+    "send-gen": {
+      "match": "(<<\\|)",
+      "captures": { "1": { "name": "keyword.operator.generator.sl" } }
+    },
+
+    "control-flow": {
+      "patterns": [
+        {
+          "match": "(?<=^\\s*)(!!)",
+          "captures": { "1": { "name": "keyword.control.loop.sl" } }
+        },
+        {
+          "match": "(?<=^\\s*)(\\?\\?)",
+          "captures": { "1": { "name": "keyword.control.elseif.sl" } }
+        },
+        {
+          "match": "(?<=^\\s*)(\\?)(?!\\?|:)",
+          "captures": { "1": { "name": "keyword.control.if.sl" } }
+        },
+        {
+          "match": "(?<=^\\s*)(--|––)",
+          "captures": { "1": { "name": "keyword.control.else.sl" } }
+        },
+        {
+          "match": "(?<=^\\s*)(——)",
+          "captures": { "1": { "name": "keyword.control.loop-else.sl" } }
+        }
+      ]
+    },
+
+    "aug-assignment": {
+      "match": "(@:<)",
+      "captures": { "1": { "name": "keyword.operator.assignment.augmented.sl" } }
+    },
+
+    "assignment": {
+      "match": "(:<)(?!=)",
+      "captures": { "1": { "name": "keyword.operator.assignment.sl" } }
+    },
+
+    "self-field": {
+      "comment": "@:field  and bare @  receiver",
+      "patterns": [
+        {
+          "match": "(@:)([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "variable.language.self.sl" },
+            "2": { "name": "variable.other.member.sl" }
+          }
+        },
+        {
+          "match": "\\b(@)\\b",
+          "captures": { "1": { "name": "variable.language.self.sl" } }
+        }
+      ]
+    },
+
+    "method-call": {
+      "comment": "obj::method  or  ::method",
+      "match": "(::)([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "punctuation.accessor.sl" },
+        "2": { "name": "entity.name.function.method.sl" }
+      }
+    },
+
+    "ns-call": {
+      "comment": "namespace::  qualified access",
+      "match": "([a-zA-Z_][a-zA-Z0-9_]*)(::)",
+      "captures": {
+        "1": { "name": "entity.name.namespace.sl" },
+        "2": { "name": "punctuation.accessor.sl" }
+      }
+    },
+
+    "builtins": {
+      "match": "\\b(print|fmt|len|abs|min|max|clamp|sqrt|floor|ceil|round|sin|cos|tan|log|log2|log10|pow|int_to_str|float_to_str|bool_to_str|str_to_int|str_to_float|read_line|read_file|write_file|append_file|file_exists|print_err|sort|reverse)(?=:)",
+      "captures": { "1": { "name": "support.function.builtin.sl" } }
+    },
+
+    "string-interpolated": {
+      "name": "string.interpolated.sl",
+      "begin": "`",
+      "end": "`",
+      "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.sl" } },
+      "endCaptures":   { "0": { "name": "punctuation.definition.string.end.sl" } },
+      "patterns": [
+        {
+          "name": "meta.interpolation.sl",
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": { "0": { "name": "punctuation.section.interpolation.begin.sl" } },
+          "endCaptures":   { "0": { "name": "punctuation.section.interpolation.end.sl" } },
+          "patterns": [ { "include": "$self" } ]
+        },
+        { "name": "constant.character.escape.sl", "match": "\\\\." }
+      ]
+    },
+
+    "string": {
+      "name": "string.quoted.double.sl",
+      "begin": "\"",
+      "end": "\"",
+      "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.sl" } },
+      "endCaptures":   { "0": { "name": "punctuation.definition.string.end.sl" } },
+      "patterns": [
+        { "name": "constant.character.escape.sl",  "match": "\\\\." },
+        { "name": "constant.other.placeholder.sl", "match": "\\{\\}" }
+      ]
+    },
+
+    "number": {
+      "patterns": [
+        { "name": "constant.numeric.float.sl",   "match": "\\b[0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?\\b" },
+        { "name": "constant.numeric.integer.sl",  "match": "\\b[0-9]+\\b" }
+      ]
+    },
+
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.comparison.sl",  "match": "==|!=|<=|>=|<|>" },
+        { "name": "keyword.operator.logical.sl",     "match": "\\&|\\|(?![>\\|:])" },
+        { "name": "keyword.operator.arithmetic.sl",  "match": "\\+|-(?!>)|\\*\\*|\\*|/|%" },
+        { "name": "keyword.operator.pipe.sl",        "match": "\\|>" },
+        { "name": "keyword.operator.null-coal.sl",   "match": "\\?:" },
+        { "name": "keyword.operator.range.sl",       "match": "\\.\\.\\.?=?" }
+      ]
+    },
+
+    "type-annotation": {
+      "match": "_(int|str|float|bool|obj|arr|void)\\b",
+      "captures": { "0": { "name": "storage.type.annotation.sl" } }
+    },
+
+    "constants": {
+      "match": "\\b(true|false|null)\\b",
+      "captures": { "0": { "name": "constant.language.sl" } }
+    }
+  }
+}

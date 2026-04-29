@@ -42,6 +42,20 @@
         -> @:value
 
 
+# ── Constructor hook (:init) ──────────────────────────────────────────
+# :init:@[void] runs automatically after fields are set.
+# Use it for defaults, validation, or derived values.
+
+.Config:host_str,port_int
+
+    :init:@[void]
+        ? @:port == 0
+            @:port @:< + 8080
+
+    :url:@[str]
+        -> fmt:"{}:{}",@:host,@:port
+
+
 # ── Generator that walks a counter ───────────────────────────────────
 
 |:counter_gen:start_int,stop_int,step_int[|int]
@@ -111,6 +125,13 @@
         total @:< + v
         n @:< + 1
     print:"sum evens 0..8 = {}",total
+
+
+    # ── Constructor hooks ────────────────────────────────────────
+    cfg  :< Config:"localhost",0
+    print:"default port = {}",cfg::url
+    cfg2 :< Config:"api.example.com",443
+    print:"explicit port = {}",cfg2::url
 
 
     # ── Namespaces ────────────────────────────────────────────────
