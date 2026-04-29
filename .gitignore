@@ -1,0 +1,29 @@
+# Python
+__pycache__
+*.py[cod]
+.Python
+
+# Build artifacts
+arc/libarc.so
+arc/libarc.a
+arc/arc_test
+arc/arc_test_asan
+arc/arc_runtime.o
+arc/arc_test.c
+
+# VS Code extension build
+sl-vscode/node_modules/
+sl-vscode/*.vsix
+
+# Installed packages
+~/.sl/
+
+# Editor
+.DS_Store
+.vscode/settings.json
+*.swp
+*.swo
+
+# Test output
+test_output.txt
+*.slb

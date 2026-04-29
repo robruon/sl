@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install llvmlite
+          sudo apt-get install -y gcc make
+
+      - name: Build ARC runtime
+        run: make shared
+        working-directory: arc
+
+      - name: Run example.sl
+        run: |
+          export PYTHONDONTWRITEBYTECODE=1
+          python codegen.py example.sl --run
+
+      - name: Run advanced.sl
+        run: |
+          export PYTHONDONTWRITEBYTECODE=1
+          python codegen.py advanced.sl --run
+
+      - name: Run modules.sl
+        run: |
+          export PYTHONDONTWRITEBYTECODE=1
+          python codegen.py modules.sl --run
+
+      - name: Run ARC tests
+        run: make
+        working-directory: arc
+        continue-on-error: true  # tests use sanitizers not available everywhere
